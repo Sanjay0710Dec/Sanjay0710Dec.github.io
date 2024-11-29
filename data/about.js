@@ -1,0 +1,2 @@
+
+export const aboutMe = "hey thanks, for showing interest to know about me. I am <span class='text-orange'>Sanjay</span> a mechanical graduate.I started programming in order to bring my ideas into reality."
