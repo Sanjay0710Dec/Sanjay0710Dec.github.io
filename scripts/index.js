@@ -375,8 +375,8 @@ function findCommandAndCreateInfo(command) {
 document.addEventListener("keydown", function (e) {
   if (e.key === "Enter") {
     const command = commandInput.value;
-    findCommandAndCreateInfo(command.toLowerCase());
-    if (!contentAddedFirstTime && command.toLowerCase() !== "clear") {
+     findCommandAndCreateInfo(command.toLowerCase().trim());
+    if (!contentAddedFirstTime && command.toLowerCase().trim() !== "clear") {
       updateInfoContainerVisibility();
       contentAddedFirstTime = true;
     }
