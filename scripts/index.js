@@ -156,15 +156,12 @@ function createAvailableCommandsInfo(command) {
     ]),
   );
 
-  const commandsDiv = createDivElement(
-    [
-      "padding-left-1rem",
-      "font-size-18px",
-      "flex-direction-column-row-gap-0-5rem",
-       "available-commands-div"
-    ],
-  
-  );
+  const commandsDiv = createDivElement([
+    "padding-left-1rem",
+    "font-size-18px",
+    "flex-direction-column-row-gap-0-5rem",
+    "available-commands-div",
+  ]);
 
   availableCommandsWithInfo.map((commandInfo) => {
     const { title, description } = commandInfo;
@@ -187,10 +184,12 @@ function createAboutInfo(command) {
     createHostUsernameCommandContainer(command),
   );
 
-  appendChildIntoParent(aboutSection,createParagraphElement(aboutMe,["padding-left-1rem"]));
+  appendChildIntoParent(
+    aboutSection,
+    createParagraphElement(aboutMe, ["padding-left-1rem"]),
+  );
 
-  appendChildIntoParent(infoContainer,aboutSection);
-
+  appendChildIntoParent(infoContainer, aboutSection);
 }
 
 // CREATES INFO FOR SKILLS COMMAND.
@@ -234,22 +233,55 @@ function createProjectsInfo(command) {
   );
 
   projectsData?.map((project) => {
-    const EachProjectTopLevelDiv = createDivElement(["flex-direction-column-row-gap-0-5rem","border-1-solid-white","border-radius-4","margin-top-1rem"],project.title);
-    const projectTitleLinksDiv = createDivElement(["flex-direction-row","align-items-center","justify-between","padding-8","border-b-1-solid-white"]);
-    const projectDescriptionPara = createParagraphElement(project.description,["padding-8","text-light-grey"]);
-    const projectLinksDiv = createDivElement(["flex-direction-row","column-gap-1rem"]);
+    const EachProjectTopLevelDiv = createDivElement(
+      [
+        "flex-direction-column-row-gap-0-5rem",
+        "border-1-solid-white",
+        "border-radius-4",
+        "margin-top-1rem",
+      ],
+      project.title,
+    );
+    const projectTitleLinksDiv = createDivElement([
+      "flex-direction-row",
+      "align-items-center",
+      "justify-between",
+      "padding-8",
+      "border-b-1-solid-white",
+    ]);
+    const projectDescriptionPara = createParagraphElement(project.description, [
+      "padding-8",
+      "text-light-grey",
+    ]);
+    const projectLinksDiv = createDivElement([
+      "flex-direction-row",
+      "column-gap-1rem",
+    ]);
 
-    appendChildIntoParent(projectTitleLinksDiv, createH4Element(project.title,["text-palevioletred"]));
-    const githubAnchorElement = createAnchorElement(project.github,null,["display-inline-block","height-width-40","background-white","border-radius-50-percent"]);
-    const projectLiveAnchorElement = createAnchorElement(project.live,null,["display-inline-block","height-width-40","background-white","border-radius-50-percent"]);
+    appendChildIntoParent(
+      projectTitleLinksDiv,
+      createH4Element(project.title, ["text-palevioletred"]),
+    );
+    const githubAnchorElement = createAnchorElement(project.github, null, [
+      "display-inline-block",
+      "height-width-40",
+      "background-white",
+      "border-radius-50-percent",
+    ]);
+    const projectLiveAnchorElement = createAnchorElement(project.live, null, [
+      "display-inline-block",
+      "height-width-40",
+      "background-white",
+      "border-radius-50-percent",
+    ]);
 
     appendChildIntoParent(
       githubAnchorElement,
-      createImageElement("../assets/icons8-github-50.png","gitIcon"),
+      createImageElement("../assets/icons8-github-50.png", "gitIcon"),
     );
     appendChildIntoParent(
       projectLiveAnchorElement,
-      createImageElement("../assets/icons8-internet-50.png","liveIcon"),
+      createImageElement("../assets/icons8-internet-50.png", "liveIcon"),
     );
     appendChildIntoParent(projectLinksDiv, githubAnchorElement);
     appendChildIntoParent(projectLinksDiv, projectLiveAnchorElement);
@@ -265,18 +297,20 @@ function createProjectsInfo(command) {
 
 // CREATES INFO FOR RESUME COMMAND.
 function createResumeInfo(command) {
-  const resumeSection  = createSectionElement(
+  const resumeSection = createSectionElement(
     "flex-direction-column-row-gap-0-5rem",
   );
   appendChildIntoParent(
     resumeSection,
     createHostUsernameCommandContainer(command),
   );
-  appendChildIntoParent(resumeSection,createParagraphElement("opening in new tab...",["padding-left-1rem"]))
+  appendChildIntoParent(
+    resumeSection,
+    createParagraphElement("opening in new tab...", ["padding-left-1rem"]),
+  );
   appendChildIntoParent(infoContainer, resumeSection);
-  
 
-  window.open(resumeLink,"_blank")
+  window.open(resumeLink, "_blank");
 }
 
 // CREATES INFO FOR SOCIALS COMMAND.
@@ -371,15 +405,49 @@ function findCommandAndCreateInfo(command) {
   }
 }
 
+// COMMAND HISTORY.
+const commandsHistory = [];
+let cmtId = null;
+function handleArrowUp() {
+  if (cmtId > 0) {
+    commandInput.value = commandsHistory[--cmtId];
+  }
+}
+
+function handleArrowDown() {
+  if (cmtId < commandsHistory.length - 1) {
+    commandInput.value = commandsHistory[++cmtId];
+  } else if (cmtId === commandsHistory.length - 1) {
+    commandInput.value = "";
+    cmtId = commandsHistory.length;
+  }
+}
+function handlePushCommandHistory(command) {
+  if (!command) {
+    return;
+  }
+  if (
+    !commandsHistory.length ||
+    commandsHistory[commandsHistory.length - 1] !== command
+  ) {
+    commandsHistory.push(command);
+  }
+  cmtId = commandsHistory.length;
+}
 // EVENTLISTNER FOR ON-ENTER.
-document.addEventListener("keydown", function (e) {
+document.addEventListener("keydown", function(e) {
   if (e.key === "Enter") {
-    const command = commandInput.value;
-     findCommandAndCreateInfo(command.toLowerCase().trim());
-    if (!contentAddedFirstTime && command.toLowerCase().trim() !== "clear") {
+    const command = commandInput.value.toLowerCase().trim();
+    findCommandAndCreateInfo(command);
+    handlePushCommandHistory(command);
+    if (!contentAddedFirstTime && command !== "clear") {
       updateInfoContainerVisibility();
       contentAddedFirstTime = true;
     }
     commandInput.value = "";
+  } else if (e.key === "ArrowUp" && commandsHistory.length > 0) {
+    handleArrowUp();
+  } else if (e.key === "ArrowDown" && commandsHistory.length > 0) {
+    handleArrowDown();
   }
 });
